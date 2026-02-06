@@ -1,0 +1,79 @@
+#############################
+#   Written by Muffin_Joe   #
+#############################
+#     I wrote this sh*t     #
+#############################
+#    AI真是写得一坨好石啊！   #
+#############################
+name: Build lineageos for oneplus pad2
+
+on:
+  workflow_dispatch: # 手动触发工作流
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04-lts
+
+    steps:
+
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 最大化构建空间
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 8192
+          temp-reserve-mb: 4096
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+
+      - name: 安装依赖
+        run: |
+          sudo apt update
+          sudo apt install -ybc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev git git-lfs lib32ncurses5-dev libncurses5 libncurses5-dev
+          echo "依赖安装完成"
+
+      - name: 拉取REPO工具
+        run: |
+          mkdir ~/bin
+          export PATH=~/bin:$PATH
+          cd ~/bin
+          git clone https://android.googlesource.com/platform/tools/repo.git -o repo
+          chmod +x repo
+          cd ~
+          echo "REPO工具拉取完成"
+
+      - name: 设置git配置
+        run: |
+          git config --global user.name "Muffin_Joe"
+          git config --global user.email "1762522664@qq.com"
+
+
+      - name: 拉取LineageOS-23.0源代码
+        run: |
+          mkdir -p ~/lineageos
+          cd ~/lineageos
+          repo init -u https://github.com/LineageOS/android.git -b lineage-23.0 --git-lfs
+          repo sync --force-sync -j$(nproc) --no-clone-bundle --no-tags
+          echo "LineageOS-23.0源代码拉取完成"
+
+      - name: 拉取一加Pad2 设备树
+        run: |
+          cd ~/lineageos
+          git clone https://github.com/OnePlus-Pad-2-development/android_device_oneplus_caihong.git -b lineage-22.2
+
+      - name: 初始化并开始编译
+        run: |
+          cd ~/lineageos
+          source build/envsetup.sh
+          lunch lineage_caihong-userdebug
+          mka bacon -j$(nproc)
+          echo "编译完成"
+
+      - name: 上传结果
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-image
+          path: ~/lineageos/out/target/product/caihong/lineage-23.0-*.zip
