@@ -32,7 +32,7 @@ jobs:
       - name: 安装依赖
         run: |
           sudo apt update
-          sudo apt install -ybc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev git git-lfs lib32ncurses5-dev libncurses5 libncurses5-dev
+          sudo apt install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev git git-lfs lib32ncurses5-dev libncurses5 libncurses5-dev
           echo "依赖安装完成"
 
       - name: 拉取REPO工具
