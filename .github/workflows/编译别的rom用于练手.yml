@@ -48,7 +48,7 @@ jobs:
           mkdir ~/bin
           export PATH=~/bin:$PATH
           cd ~/bin
-          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          curl https://storage.googleapis.com/git-repo-downloads/repo
           chmod a+x repo
           cd ~
           echo "REPO工具拉取完成"
