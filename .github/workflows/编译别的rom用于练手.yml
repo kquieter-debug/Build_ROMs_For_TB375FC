@@ -45,12 +45,12 @@ jobs:
 
       - name: 拉取REPO工具
         run: |
-          mkdir ~/bin
-          export PATH=~/bin:$PATH
-          cd ~/bin
-          curl https://storage.googleapis.com/git-repo-downloads/repo
-          chmod a+x repo
-          cd ~
+          sudo curl -o /usr/local/bin/repo https://storage.googleapis.com/git-repo-downloads/repo
+          sudo chmod a+x /usr/local/bin/repo
+          if [ ! -f /usr/local/bin/repo ]; then
+            echo "repo 工具下载失败，终止流程"
+            exit 1
+          fi
           echo "REPO工具拉取完成"
 
       - name: 设置git配置
